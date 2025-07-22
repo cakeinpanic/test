@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import fs from 'fs';
+import { scanLighthouseReports } from './lighthouse-utils.mjs';
 
 const TELEGRAM_API_URL = 'https://api.telegram.org';
 
@@ -7,16 +8,13 @@ const TELEGRAM_API_ENDPOINTS = {
   sendMessage: `/bot${process.env.BOT_TOKEN}/sendmessage`,
 };
 
-const getReportLinks = () => {
-  const data = JSON.parse(fs.readFileSync(process.env.REPORT_LINKS_PATH, 'utf8'));
-  return Object.keys(data).map(key => `<a href="${data[key]}">Report for ${key}</a>`).join('\n');
-}
 
-export const sendLighthouseReport = async (reportData, reportUrl) => {
+
+export const sendLighthouseReport = async (reportData) => {
   console.log('Sending Lighthouse report to Telegram');
 
   try {
-    const message = formatLighthouseMessage(reportData, reportUrl);
+    const message = formatLighthouseMessage(reportData);
     await sendMessage(message);
     console.log('Lighthouse report successfully sent to Telegram');
   } catch (err) {
@@ -25,32 +23,34 @@ export const sendLighthouseReport = async (reportData, reportUrl) => {
   }
 };
 
-/**
- * Formats Lighthouse data into a Telegram message
- */
-function formatLighthouseMessage (reportData, reportUrl) {
-  let stats = '';
-  if (reportData) {
-    const { performance, accessibility, bestPractices, seo } = reportData.categories;
+function getReportText (reportData, reportLink) {
+  const { performance, accessibility, bestPractices, seo } = reportData.categories;
 
-    // Format scores with emoji indicators
-    const getEmoji = (metric) => {
-      if (metric?.score >= 0.9) return '🟢';
-      if (metric?.score >= 0.5) return '🟠';
-      return '🔴';
-    };
-
-    stats = `${getEmoji(performance)} Performance: ${Math.round(performance?.score * 100)}
+  // Format scores with emoji indicators
+  const getEmoji = (metric) => {
+    if (metric?.score >= 0.9) return '🟢';
+    if (metric?.score >= 0.5) return '🟠';
+    return '🔴';
+  };
+  const stats = `${getEmoji(performance)} Performance: ${Math.round(performance?.score * 100)}
 ${getEmoji(accessibility)} Accessibility: ${Math.round(accessibility?.score * 100)}
 ${getEmoji(bestPractices)} Best Practices: ${Math.round(bestPractices?.score * 100)}
 ${getEmoji(seo)} SEO: ${Math.round(seo?.score * 100)}`
-  }
 
   return `
-🔍 <b>Lighthouse Report</b>
+📊<b><a href="${reportLink}">Report for ${reportData.finalDisplayedUrl}</a></b>
 ${stats}
-📊${getReportLinks()}`
 
+`
+
+}
+function formatLighthouseMessage (reportsData) {
+  const links = JSON.parse(fs.readFileSync('.lighthouseci/links.json', 'utf8'));
+  let text = '🔍 Lighthouse Report\n'
+  Object.keys(reportsData).forEach(key => {
+    text += getReportText(reportsData[key], links[key])
+  })
+  return text
 }
 
 /**
@@ -69,7 +69,7 @@ async function sendMessage (message) {
       chat_id: process.env.TG_ALERT_CHANEL_ID,
       text: message,
       parse_mode: 'HTML',
-      disable_web_page_preview: false,
+      disable_web_page_preview: true,
       disable_notification: false,
     }),
   };
@@ -100,18 +100,10 @@ async function handleErrorWithFallback (err) {
   return err;
 }
 
-let reportData = null
-
-try {
-  reportData = JSON.parse(fs.readFileSync(process.env.REPORT_PATH, 'utf8'));
-} catch (e) {
-
-}
-
-const reportUrl = '.lighthouseci/links.json'
+let reportsData = await scanLighthouseReports()
 
 // Execute the function and handle the promise
-sendLighthouseReport(reportData, reportUrl).then(() => console.log('Report sent successfully')).catch(err => {
+sendLighthouseReport(reportsData).then(() => console.log('Report sent successfully')).catch(err => {
   console.error('Failed to send report:', err);
   process.exit(1);
 });
