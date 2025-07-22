@@ -1,15 +1,17 @@
 module.exports = {
   ci: {
+
     collect: {
+      url: ['https://lido.fi'], // <--- Add your target URL(s)
       // Number of runs to perform per URL
-      numberOfRuns: 3,
+      numberOfRuns: 1,
       // Use desktop configuration
       settings: {
         preset: 'desktop',
         // Skip the slow PWA category by default
         onlyCategories: ['performance', 'accessibility', 'best-practices', 'seo'],
         // Set a reasonable timeout
-        maxWaitForLoad: 30000,
+        maxWaitForLoad: 10000,
       },
     },
     assert: {
