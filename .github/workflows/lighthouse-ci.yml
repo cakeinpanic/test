@@ -1,0 +1,83 @@
+name: Lighthouse CI
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Run daily at midnight UTC
+  workflow_dispatch:  # Allow manual triggering
+  push:
+jobs:
+  lighthouse-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Run Lighthouse
+        id: lighthouse
+        uses: treosh/lighthouse-ci-action@v10
+        with:
+          urls: |
+            https://lido.fi/
+          configPath: '.lighthouserc.js'
+          uploadArtifacts: true
+
+      - name: Extract Lighthouse results
+        id: extract
+        run: |
+          # Extract performance scores from the results
+          PERFORMANCE=$(jq -r '.summary.performance' ${{ steps.lighthouse.outputs.manifest }})
+          ACCESSIBILITY=$(jq -r '.summary.accessibility' ${{ steps.lighthouse.outputs.manifest }})
+          BEST_PRACTICES=$(jq -r '.summary["best-practices"]' ${{ steps.lighthouse.outputs.manifest }})
+          SEO=$(jq -r '.summary.seo' ${{ steps.lighthouse.outputs.manifest }})
+          PWA=$(jq -r '.summary.pwa' ${{ steps.lighthouse.outputs.manifest }})
+
+          # Get the report URL
+          REPORT_URL=$(jq -r '.links.html' ${{ steps.lighthouse.outputs.manifest }})
+
+          # Save values to environment variables
+          echo "PERFORMANCE=$PERFORMANCE" >> $GITHUB_ENV
+          echo "ACCESSIBILITY=$ACCESSIBILITY" >> $GITHUB_ENV
+          echo "BEST_PRACTICES=$BEST_PRACTICES" >> $GITHUB_ENV
+          echo "SEO=$SEO" >> $GITHUB_ENV
+          echo "PWA=$PWA" >> $GITHUB_ENV
+          echo "REPORT_URL=$REPORT_URL" >> $GITHUB_ENV
+
+      - name: Send Lighthouse report to Telegram
+        env:
+          TG_ALERT_BOT_TOKEN: ${{ secrets.TG_ALERT_BOT_TOKEN }}
+          TG_ALERT_CHANEL_ID: ${{ secrets.TG_ALERT_CHANEL_ID }}
+        run: |
+          # Create a temporary JSON file with the report data
+          cat > /tmp/lighthouse-report.json << EOF
+          {
+            "performance": ${{ env.PERFORMANCE }},
+            "accessibility": ${{ env.ACCESSIBILITY }},
+            "bestPractices": ${{ env.BEST_PRACTICES }},
+            "seo": ${{ env.SEO }}
+          }
+          EOF
+
+          # Create a temporary script to send the report
+          cat > /tmp/send-report.mjs << EOF
+          import { sendLighthouseReport } from './send-telegram-report.mjs';
+          import fs from 'fs';
+
+          const reportData = JSON.parse(fs.readFileSync('/tmp/lighthouse-report.json', 'utf8'));
+          const reportUrl = '${{ env.REPORT_URL }}';
+
+          // Execute the function and handle the promise
+          sendLighthouseReport(reportData, reportUrl)
+            .then(() => console.log('Report sent successfully'))
+            .catch(err => {
+              console.error('Failed to send report:', err);
+              process.exit(1);
+            });
+          EOF
+
+          # Run the script with Node.js
+          node --experimental-modules /tmp/send-report.mjs
