@@ -17,15 +17,6 @@ jobs:
         with:
           node-version: '18'
 
-#      - name: Run Lighthouse
-#        id: lighthouse
-#        uses: treosh/lighthouse-ci-action@v10
-#        with:
-#          urls: |
-#            https://lido.fi/
-#          configPath: '.lighthouserc.js'
-#          uploadArtifacts: true
-
       - name: run lhci
         run: |
           npm install -g @lhci/cli@0.12.0
@@ -35,7 +26,7 @@ jobs:
         run: |
           echo "BOT_TOKEN=${{ secrets.TG_ALERT_BOT_TOKEN }}" > .env
           echo "TG_ALERT_CHANEL_ID=${{ secrets.TG_ALERT_CHANEL_ID }}" >> .env
-        
+      
 
       - name: Send Lighthouse report to Telegram
         run: |
