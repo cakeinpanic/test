@@ -15,16 +15,21 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '22'
+
+      - name: Install dependencies
+        run: |
+          yarn add global @lhci/cli@0.12.0
+          yarn add dotenv
 
       - name: run lhci
         run: |
-          npm install -g @lhci/cli@0.12.0
-          lhci collect --config .lighthouserc.js
+          npx lhci autorun
+          ls
 
       - name: Create .env file from GitHub secrets
         run: |
-          echo "BOT_TOKEN=${{ secrets.TG_ALERT_BOT_TOKEN }}" > .env
+          echo "BOT_TOKEN=${{ secrets.BOT_TOKEN }}" > .env
           echo "TG_ALERT_CHANEL_ID=${{ secrets.TG_ALERT_CHANEL_ID }}" >> .env
       
 
