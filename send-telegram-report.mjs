@@ -8,8 +8,6 @@ const TELEGRAM_API_ENDPOINTS = {
   sendMessage: `/bot${process.env.BOT_TOKEN}/sendmessage`,
 };
 
-
-
 export const sendLighthouseReport = async (reportData) => {
   console.log('Sending Lighthouse report to Telegram');
 
@@ -24,7 +22,8 @@ export const sendLighthouseReport = async (reportData) => {
 };
 
 function getReportText (reportData, reportLink) {
-  const { performance, accessibility, bestPractices, seo } = reportData.categories;
+  const { performance, accessibility, seo } = reportData.categories;
+  const bestPractices = reportData.categories['best-practices'];
 
   // Format scores with emoji indicators
   const getEmoji = (metric) => {

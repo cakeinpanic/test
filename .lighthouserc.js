@@ -2,7 +2,7 @@ module.exports = {
   ci: {
 
     collect: {
-      url: ['https://lido.fi', 'https://v3.lido.fi'], // <--- Add your target URL(s)
+      url: ['https://lido.fi', 'https://v3.lido.fi',  'https://v3.lido.fi/testnet', 'https://lido.fi/institutional'], // <--- Add your target URL(s)
       // Number of runs to perform per URL
       numberOfRuns: 1,
       // Use desktop configuration
