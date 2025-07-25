@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import fs from 'fs';
 import { scanLighthouseReports } from './lighthouse-utils.mjs';
+import groupBy from 'lodash.groupby';
 
 const TELEGRAM_API_URL = 'https://api.telegram.org';
 
@@ -22,7 +23,6 @@ export const sendLighthouseReport = async (reportData) => {
 };
 
 function getReportText (reportData, reportLink) {
-
   const isDesktop = reportData.requestedUrl.indexOf('?desktop') > 0;
   reportData.finalDisplayedUrl = reportData.finalDisplayedUrl.replace('?desktop', '');
   const { performance, accessibility, seo } = reportData.categories;
@@ -37,17 +37,35 @@ function getReportText (reportData, reportLink) {
   const stats = `${getEmoji(performance)} Performance: ${Math.round(performance?.score * 100)} ${getEmoji(accessibility)} Accessibility: ${Math.round(accessibility?.score * 100)} ${getEmoji(
     bestPractices)} Best Practices: ${Math.round(bestPractices?.score * 100)} ${getEmoji(seo)} SEO: ${Math.round(seo?.score * 100)}`
 
+  return `<b><a href="${reportLink}">${isDesktop ? '🖥️' : '📱'} ${isDesktop ? 'desktop' : 'mobile'} report </a></b>
+${stats}`
+
+}
+function getMixedReportText (reportData, links) {
+  const urlName = reportData[0].requestedUrl.replace('?desktop', '').replace('https://', '').replace('http://', '');
+
   return `
-📊<b> <a href="${reportLink}">${isDesktop ? '🖥️' : '📱'} Report for ${reportData.finalDisplayedUrl} [${isDesktop ? 'desktop' : 'mobile'}]</a></b>
-${stats}
-`
+📊 <b>${urlName}</b>
+
+${getReportText(reportData[0], links[reportData[0].requestedUrl])}
+${getReportText(reportData[1], links[reportData[1].requestedUrl])}
+
+`;
 
 }
 function formatLighthouseMessage (reportsData) {
   const links = JSON.parse(fs.readFileSync('.lighthouseci/links.json', 'utf8'));
-  let text = '🔍 Lighthouse Report\n'
-  Object.keys(reportsData).forEach(key => {
-    text += getReportText(reportsData[key], links[key])
+  let text = `
+
+
+<b>-----------------🔍 Lighthouse Report------------------------</b>
+
+`
+  const reports = groupBy(reportsData, (report, key) => {
+    return report.requestedUrl.replace('?desktop', '')
+  })
+  Object.keys(reports).sort().forEach(key => {
+    text += getMixedReportText(reports[key], links)
   })
   return text
 }
