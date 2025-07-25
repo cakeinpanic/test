@@ -8,7 +8,15 @@ const TELEGRAM_API_ENDPOINTS = {
   sendMessage: `/bot${process.env.BOT_TOKEN}/sendmessage`,
 };
 
-export async function sendLighthouseReport (reportData) {
+const isDesktopReport = (report) => {
+  return report.requestedUrl.indexOf('?desktop') > 0;
+}
+
+const getDeviceAgnosticUrl = (url) => {
+  return url.replace('?desktop', '');
+}
+
+async function sendLighthouseReport (reportData) {
   console.log('Sending Lighthouse report to Telegram');
 
   try {
@@ -21,8 +29,7 @@ export async function sendLighthouseReport (reportData) {
 }
 
 function getReportText (reportData, reportLink) {
-  const isDesktop = reportData.requestedUrl.indexOf('?desktop') > 0;
-  reportData.finalDisplayedUrl = reportData.finalDisplayedUrl.replace('?desktop', '');
+  const isDesktop = isDesktopReport(reportData);
 
   const { performance, accessibility, seo } = reportData.categories;
   const bestPractices = reportData.categories['best-practices'];
@@ -48,7 +55,7 @@ ${stats}`;
 }
 
 function getMixedReportText (reportData, links) {
-  const urlName = reportData[0].requestedUrl.replace('?desktop', '')
+  const urlName = getDeviceAgnosticUrl(reportData[0].requestedUrl);
 
   return `
 📊 <b>${urlName}</b>
@@ -67,15 +74,15 @@ function formatLighthouseMessage (reportsData) {
 
   // Group reports by URL (without desktop parameter)
   const reports = groupBy(reportsData, (report) => {
-    return report.requestedUrl.replace('?desktop', '');
+    return getDeviceAgnosticUrl(report.requestedUrl);
   });
 
   // Sort URLs alphabetically and add each report
-  Object.keys(reports).sort().forEach(key => {
-    text += getMixedReportText(reports[key], links);
+  const reportTexts = Object.keys(reports).sort().map(key => {
+    return getMixedReportText(reports[key], links);
   });
 
-  return text;
+  return text + reportTexts.join('\n');
 }
 
 async function sendMessage (message) {
