@@ -11,7 +11,7 @@ const url = [
   'https://lido.fi/lido-ecosystem',
   'https://lido.fi/scorecard',
   'https://lido.fi/steth-in-defi'
-];
+].sort();
 module.exports = {
   ci: {
 

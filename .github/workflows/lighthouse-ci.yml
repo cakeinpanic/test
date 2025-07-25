@@ -2,9 +2,9 @@ name: Lighthouse CI
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # Run daily at midnight UTC
+#    - cron: '0 0 * * *'  # Run daily at midnight UTC
   workflow_dispatch:  # Allow manual triggering
-  push:
+#  push:
 jobs:
   lighthouse-check:
     runs-on: ubuntu-latest
