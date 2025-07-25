@@ -1,10 +1,11 @@
 {
   "name": "test",
   "version": "1.0.0",
-  "main": ".lighthouserc.js",
+  "main": ".lighthouserc.mobile.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "send": "node send-telegram-report.mjs"
+    "send": "node send-telegram-report.mjs",
+    "lhci": "lhci autorun --config .lighthouserc.mobile.js && lhci autorun --config .lighthouserc.desktop.js"
   },
   "author": "",
   "license": "ISC",
@@ -12,6 +13,7 @@
   "dependencies": {
     "@lhci/cli": "^0.15.1",
     "dotenv": "^17.2.0",
-    "lighthouse": "^12.8.0"
+    "lighthouse": "^12.8.0",
+    "seo-analyzer": "^3.2.0"
   }
 }
