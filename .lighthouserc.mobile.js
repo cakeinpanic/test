@@ -1,16 +1,16 @@
 const url = [
   'https://lido.fi',
-  //'https://v3.lido.fi',
-  //'https://v3.lido.fi/testnet',
-  //'https://lido.fi/institutional',
-  //'https://lido.fi/faq',
-  //'https://lido.fi/governance',
-  //'https://lido.fi/lego',
-  //'https://lido.fi/lidoconnect',
-  //'https://lido.fi/lido-multichain',
-  //'https://lido.fi/lido-ecosystem',
-  //'https://lido.fi/scorecard',
-  //'https://lido.fi/steth-in-defi'
+  'https://v3.lido.fi',
+  'https://v3.lido.fi/testnet',
+  'https://lido.fi/institutional',
+  'https://lido.fi/faq',
+  'https://lido.fi/governance',
+  'https://lido.fi/lego',
+  'https://lido.fi/lidoconnect',
+  'https://lido.fi/lido-multichain',
+  'https://lido.fi/lido-ecosystem',
+  'https://lido.fi/scorecard',
+  'https://lido.fi/steth-in-defi'
 ];
 module.exports = {
   ci: {

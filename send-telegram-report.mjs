@@ -22,6 +22,9 @@ export const sendLighthouseReport = async (reportData) => {
 };
 
 function getReportText (reportData, reportLink) {
+
+  const isDesktop = reportData.requestedUrl.indexOf('?desktop') > 0;
+  reportData.finalDisplayedUrl  = reportData.finalDisplayedUrl.replace('?desktop', '');
   const { performance, accessibility, seo } = reportData.categories;
   const bestPractices = reportData.categories['best-practices'];
 
@@ -37,7 +40,7 @@ ${getEmoji(bestPractices)} Best Practices: ${Math.round(bestPractices?.score * 1
 ${getEmoji(seo)} SEO: ${Math.round(seo?.score * 100)}`
 
   return `
-📊<b><a href="${reportLink}">Report for ${reportData.finalDisplayedUrl}</a></b>
+📊<b><a href="${reportLink}">Report for ${reportData.finalDisplayedUrl} ${isDesktop? '[desktop]': '[mobile]'}</a></b>
 ${stats}
 
 `
