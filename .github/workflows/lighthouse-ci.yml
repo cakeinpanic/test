@@ -24,8 +24,7 @@ jobs:
 
       - name: run lhci
         run: |
-          npx lhci autorun
-          ls
+          yarn lhci
 
       - name: Create .env file from GitHub secrets
         run: |
