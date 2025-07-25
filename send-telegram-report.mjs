@@ -20,8 +20,13 @@ async function sendLighthouseReport (reportData) {
   console.log('Sending Lighthouse report to Telegram');
 
   try {
-    const message = formatLighthouseMessage(reportData);
-    await sendMessage(message);
+    const messages = formatLighthouseMessage(reportData);
+    for (const message of messages) {
+      if (!message || message.trim().length === 0) {
+        break;
+      }
+      await sendMessage(message);
+    }
     console.log('Lighthouse report successfully sent to Telegram');
   } catch (err) {
     console.error('Failed to send Lighthouse report to Telegram:', err);
@@ -72,17 +77,18 @@ function formatLighthouseMessage (reportsData) {
 <b>-----------------🔍 Lighthouse Report------------------------</b>
 `;
 
-  // Group reports by URL (without desktop parameter)
   const reports = groupBy(reportsData, (report) => {
     return getDeviceAgnosticUrl(report.requestedUrl);
   });
 
-  // Sort URLs alphabetically and add each report
   const reportTexts = Object.keys(reports).sort().map(key => {
     return getMixedReportText(reports[key], links);
   });
 
-  return text + reportTexts.join('\n');
+  const MAX_COUNT = 17 //approximately 4050 characters per message + approximately 200 characters per page report
+  const chunks = [text + reportTexts.slice(0, MAX_COUNT).join('\n'), ...reportTexts.slice(MAX_COUNT).join('\n')];
+
+  return chunks
 }
 
 async function sendMessage (message) {
