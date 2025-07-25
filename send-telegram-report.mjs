@@ -24,7 +24,7 @@ export const sendLighthouseReport = async (reportData) => {
 function getReportText (reportData, reportLink) {
 
   const isDesktop = reportData.requestedUrl.indexOf('?desktop') > 0;
-  reportData.finalDisplayedUrl  = reportData.finalDisplayedUrl.replace('?desktop', '');
+  reportData.finalDisplayedUrl = reportData.finalDisplayedUrl.replace('?desktop', '');
   const { performance, accessibility, seo } = reportData.categories;
   const bestPractices = reportData.categories['best-practices'];
 
@@ -34,15 +34,12 @@ function getReportText (reportData, reportLink) {
     if (metric?.score >= 0.5) return '🟠';
     return '🔴';
   };
-  const stats = `${getEmoji(performance)} Performance: ${Math.round(performance?.score * 100)}
-${getEmoji(accessibility)} Accessibility: ${Math.round(accessibility?.score * 100)}
-${getEmoji(bestPractices)} Best Practices: ${Math.round(bestPractices?.score * 100)}
-${getEmoji(seo)} SEO: ${Math.round(seo?.score * 100)}`
+  const stats = `${getEmoji(performance)} Performance: ${Math.round(performance?.score * 100)} ${getEmoji(accessibility)} Accessibility: ${Math.round(accessibility?.score * 100)} ${getEmoji(
+    bestPractices)} Best Practices: ${Math.round(bestPractices?.score * 100)} ${getEmoji(seo)} SEO: ${Math.round(seo?.score * 100)}`
 
   return `
-📊<b><a href="${reportLink}">Report for ${reportData.finalDisplayedUrl} ${isDesktop? '[desktop]': '[mobile]'}</a></b>
+📊<b> <a href="${reportLink}">${isDesktop ? '🖥️' : '📱'} Report for ${reportData.finalDisplayedUrl} [${isDesktop ? 'desktop' : 'mobile'}]</a></b>
 ${stats}
-
 `
 
 }
