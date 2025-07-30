@@ -8,6 +8,7 @@
     "lhci": "rm -rf .lighthouseci && lhci autorun --config .lighthouserc.mobile.js && lhci autorun --config .lighthouserc.desktop.js",
     "semantic-release": "semantic-release"
   },
+
   "author": "",
   "license": "ISC",
   "description": "",
