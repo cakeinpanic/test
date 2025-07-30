@@ -1,6 +1,6 @@
 {
   "name": "@cakeinpanic/provenance-test",
-  "version": "1.0.0",
+  "version": "4.0.0-canary",
   "type": "module",
   "main": ".lighthouserc.mobile.js",
   "scripts": {
