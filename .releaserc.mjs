@@ -1,4 +1,5 @@
-module.exports = {
+console.log(123);
+export default {
   branches: [
     'master'
   ],
