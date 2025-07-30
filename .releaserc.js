@@ -2,6 +2,9 @@ export default {
   branches: [
     {
       name: 'master', 'channel': 'alpha', 'prerelease': 'alpha'
+    },
+    {
+      name: 'katya', 'channel': 'alpha', 'prerelease': 'alpha'
     }
   ],
   plugins: [
