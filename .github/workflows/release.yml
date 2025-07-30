@@ -13,7 +13,7 @@ jobs:
       contents: write      # to create releases
       issues: write        # to comment on issues
       pull-requests: write # to comment on PRs
-      id-token: write      # for npm provenance
+#      id-token: write      # for npm provenance
 
     steps:
       - name: Checkout
