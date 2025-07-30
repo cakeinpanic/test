@@ -38,5 +38,6 @@
     "type": "git",
     "url": "https://github.com/cakeinpanic/test"
   },
+
   "packageManager": "yarn@4.9.0"
 }
