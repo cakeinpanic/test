@@ -30,6 +30,7 @@
     "@semrel-extra/npm": "1.2.2",
     "semantic-release": "19.0.5"
   },
+
   "publishConfig": {
     "access": "public",
     "provenance": true
