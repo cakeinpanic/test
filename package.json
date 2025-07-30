@@ -8,7 +8,6 @@
     "lhci": "rm -rf .lighthouseci && lhci autorun --config .lighthouserc.mobile.js && lhci autorun --config .lighthouserc.desktop.js",
     "semantic-release": "semantic-release"
   },
-
   "author": "",
   "license": "ISC",
   "description": "",
@@ -21,6 +20,7 @@
   },
   "devDependencies": {
     "@semantic-release/commit-analyzer": "9.0.2",
+    "@semantic-release/npm": "^11.0.2",
     "@semantic-release/release-notes-generator": "10.0.3",
     "@semrel-extra/npm": "1.2.2",
     "conventional-changelog-conventionalcommits": "4.6.3",
