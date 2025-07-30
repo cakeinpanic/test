@@ -1,10 +1,8 @@
 export default {
   branches: [
     {
-      name: 'master'
+      name: 'master', 'channel': 'alpha', 'prerelease': 'alpha'
     }
-
-
   ],
   plugins: [
     [
@@ -15,7 +13,7 @@ export default {
     ],
     '@semrel-extra/npm',
     [
-      "@semantic-release/github"
+      '@semantic-release/github'
     ]
   ],
   verifyConditions: []
