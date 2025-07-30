@@ -2,7 +2,7 @@ module.exports = {
   branches: [
     'master',
     {
-      name: 'katya', 'channel': 'alpha', 'prerelease': 'alpha'
+      name: 'katya',  'prerelease': 'alpha'
     }
   ],
   plugins: [
