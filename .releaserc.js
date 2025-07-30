@@ -4,6 +4,7 @@ export default {
       name: 'master'
     }
 
+
   ],
   plugins: [
     [
