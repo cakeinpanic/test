@@ -44,7 +44,7 @@ __metadata:
     "@semantic-release/changelog": "npm:^6.0.3"
     "@semantic-release/commit-analyzer": "npm:9.0.2"
     "@semantic-release/git": "npm:^10.0.1"
-    "@semantic-release/github": "npm:^11.0.3"
+    "@semantic-release/github": "npm:11.0.3"
     "@semantic-release/npm": "npm:^11.0.2"
     "@semantic-release/release-notes-generator": "npm:10.0.3"
     "@semrel-extra/npm": "npm:1.2.2"
@@ -1453,7 +1453,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@semantic-release/github@npm:^11.0.3":
+"@semantic-release/github@npm:11.0.3":
   version: 11.0.3
   resolution: "@semantic-release/github@npm:11.0.3"
   dependencies:
