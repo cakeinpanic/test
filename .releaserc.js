@@ -1,11 +1,6 @@
-module.exports = {
+export default {
   branches: [
-    {
-      name: 'master'
-    },
-    {
-      name: 'katya'
-    }
+    'master'
   ],
   plugins: [
     [
