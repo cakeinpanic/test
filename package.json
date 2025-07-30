@@ -1,20 +1,38 @@
 {
-  "name": "test",
+  "name": "@cakeinpanic/provenance-test",
   "version": "1.0.0",
+  "type": "module",
   "main": ".lighthouserc.mobile.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "send": "node send-telegram-report.mjs",
-    "lhci": "rm -rf .lighthouseci && lhci autorun --config .lighthouserc.mobile.js && lhci autorun --config .lighthouserc.desktop.js"
+    "lhci": "rm -rf .lighthouseci && lhci autorun --config .lighthouserc.mobile.js && lhci autorun --config .lighthouserc.desktop.js",
+    "semantic-release": "semantic-release"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
     "@lhci/cli": "^0.15.1",
+    "@semrel-extra/npm": "^1.2.2",
     "dotenv": "^17.2.0",
     "lighthouse": "^12.8.0",
     "lodash.groupby": "^4.6.0",
     "seo-analyzer": "^3.2.0"
-  }
+  },
+  "devDependencies": {
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "9.0.2",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^11.0.3",
+    "@semantic-release/npm": "^11.0.2",
+    "@semantic-release/release-notes-generator": "10.0.3",
+    "@semrel-extra/npm": "1.2.2",
+    "semantic-release": "19.0.5"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "packageManager": "yarn@4.9.0"
 }
