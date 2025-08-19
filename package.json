@@ -1,6 +1,6 @@
 {
   "name": "@cakeinpanic/provenance-test",
-  "version": "4.0.0-canary",
+  "version": "5.0.1",
   "main": ".lighthouserc.mobile.js",
   "scripts": {
     "test": "ecdho \"Error: no test specified\" && exit 1",

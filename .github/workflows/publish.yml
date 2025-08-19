@@ -1,0 +1,41 @@
+name: Publish to registry
+on:
+  push:
+
+permissions:
+  contents: write
+  id-token: write # to enable use of OIDC for npm provenance
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Enable corepack
+        run: corepack enable
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'yarn'
+
+      - name: Install deps
+        run: yarn install --frozen-lockfile
+
+      - name: Configure Yarn npm auth
+        run: |
+          yarn config set npmAuthToken $NODE_AUTH_TOKEN
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish with provenance
+        run: yarn npm publish --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}   # must be on the publish step
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
